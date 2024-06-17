@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title>User Management App</title>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+    <!-- Font Awesome CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+</head>
+
+<body>
+
+<header class="bg-primary text-white mb-3 py-2 px-5">
+                <h1 class="display-5">User Management App</h1>
+</header>
+
+<h2 class="text-center">Users List</h2>
+<div class="mx-5">
+    <!-- Button to trigger Add Employee Modal -->
+    <button type="button" class="btn btn-primary mb-4" data-toggle="modal" data-target="#addEmployeeModal">
+        Add User <i class="fas fa-user-plus"></i>
+    </button>
+
+    <!-- Table to display list of employees -->
+    <table class="table table-striped table-bordered">
+        <thead>
+        <tr>
+            <th>User First Name</th>
+            <th>User Last Name</th>
+            <th>User Email Id</th>
+            <th>Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        <!-- Iterate over listEmployees model attribute -->
+        <tr th:each="employee : ${listEmployees}">
+            <td th:text="${employee.firstname}"></td>
+            <td th:text="${employee.lastname}"></td>
+            <td th:text="${employee.email}"></td>
+            <td>
+                <!-- Button to trigger Update Employee Modal -->
+                <button type="button" class="btn btn-info" data-toggle="modal" data-target="#updateEmployeeModal"
+                        th:data-employee-id="${employee.id}" th:data-employee-firstname="${employee.firstname}" th:data-employee-lastname="${employee.lastname}" th:data-employee-email="${employee.email}">
+                    Update <i class="fas fa-edit"></i>
+                </button>
+                <!-- Link to deleteEmployee endpoint -->
+                <a th:href="@{/deleteEmployee/{id}(id=${employee.id})}" class="btn btn-danger">
+                    Delete <i class="fas fa-trash-alt"></i>
+                </a>
+                <!-- Button to trigger View Employee Modal -->
+                <button type="button" class="btn btn-success" data-toggle="modal" data-target="#viewEmployeeModal"
+                        th:data-employee-id="${employee.id}" th:data-employee-firstname="${employee.firstname}" th:data-employee-lastname="${employee.lastname}" th:data-employee-email="${employee.email}">
+                    View <i class="fas fa-eye"></i>
+                </button>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+<!-- Add Employee Modal -->
+<div class="modal fade" id="addEmployeeModal" tabindex="-1" role="dialog" aria-labelledby="addEmployeeModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addEmployeeModalLabel">Add New Employee</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <!-- Form to add a new employee -->
+                <form th:action="@{/saveEmployee}" th:object="${employee}" method="post">
+                    <div class="form-group">
+                        <label for="firstname">First Name:</label>
+                        <input type="text" th:field="*{firstname}" class="form-control" />
+                        <div th:if="${#fields.hasErrors('firstname')}" th:errors="*{firstname}"
+                             class="invalid-feedback">First Name Error
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="lastname">Last Name:</label>
+                        <input type="text" th:field="*{lastname}" class="form-control" />
+                        <div th:if="${#fields.hasErrors('lastname')}" th:errors="*{lastname}"
+                             class="invalid-feedback">Last Name Error
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Email:</label>
+                        <input type="email" th:field="*{email}" class="form-control" />
+                        <div th:if="${#fields.hasErrors('email')}" th:errors="*{email}" class="invalid-feedback">
+                            Email Error
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Save <i class="fas fa-save"></i></button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Update Employee Modal -->
+<div class="modal fade" id="updateEmployeeModal" tabindex="-1" role="dialog" aria-labelledby="updateEmployeeModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="updateEmployeeModalLabel">Update Employee</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <!-- Form to update an employee -->
+                <form th:action="@{/updateEmployee}" th:object="${employee}" method="post">
+                    <input type="hidden" th:field="*{id}" id="updateEmployeeId" />
+                    <div class="form-group">
+                        <label for="updateFirstName">First Name:</label>
+                        <input type="text" th:field="*{firstname}" class="form-control" id="updateFirstName" />
+                        <div th:if="${#fields.hasErrors('firstname')}" th:errors="*{firstname}"
+                             class="invalid-feedback">First Name Error
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="updateLastName">Last Name:</label>
+                        <input type="text" th:field="*{lastname}" class="form-control" id="updateLastName" />
+                        <div th:if="${#fields.hasErrors('lastname')}" th:errors="*{lastname}"
+                             class="invalid-feedback">Last Name Error
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="updateEmail">Email:</label>
+                        <input type="email" th:field="*{email}" class="form-control" id="updateEmail" />
+                        <div th:if="${#fields.hasErrors('email')}" th:errors="*{email}" class="invalid-feedback">
+                            Email Error
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Update <i class="fas fa-edit"></i></button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- View Employee Modal -->
+<div class="modal fade" id="viewEmployeeModal" tabindex="-1" role="dialog" aria-labelledby="viewEmployeeModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="viewEmployeeModalLabel">View Employee</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <!-- Display employee details -->
+                <div class="form-group">
+                    <label for="viewFirstName">First Name:</label>
+                    <input type="text" class="form-control" id="viewFirstName" readonly />
+                </div>
+                <div class="form-group">
+                    <label for="viewLastName">Last Name:</label>
+                    <input type="text" class="form-control" id="viewLastName" readonly />
+                </div>
+                <div class="form-group">
+                    <label for="viewEmail">Email:</label>
+                    <input type="email" class="form-control" id="viewEmail" readonly />
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Bootstrap and jQuery scripts -->
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+
+<script>
+    // Function to populate the Update Employee modal with existing data
+    $('#updateEmployeeModal').on('show.bs.modal', function (event) {
+        var button = $(event.relatedTarget); // Button that triggered the modal
+        var id = button.data('employee-id');
+        var firstname = button.data('employee-firstname');
+        var lastname = button.data('employee-lastname');
+        var email = button.data('employee-email');
+
+        var modal = $(this);
+        modal.find('#updateEmployeeId').val(id);
+        modal.find('#updateFirstName').val(firstname);
+        modal.find('#updateLastName').val(lastname);
+        modal.find('#updateEmail').val(email);
+    });
+
+    // Function to populate the View Employee modal with existing data
+    $('#viewEmployeeModal').on('show.bs.modal', function (event) {
+        var button = $(event.relatedTarget); // Button that triggered the modal
+        var firstname = button.data('employee-firstname');
+        var lastname = button.data('employee-lastname');
+        var email = button.data('employee-email');
+
+        var modal = $(this);
+        modal.find('#viewFirstName').val(firstname);
+        modal.find('#viewLastName').val(lastname);
+        modal.find('#viewEmail').val(email);
+    });
+</script>
+
+</body>
+
+</html>
