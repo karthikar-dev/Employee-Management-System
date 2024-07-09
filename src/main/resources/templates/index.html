@@ -76,21 +76,21 @@
                 <form th:action="@{/saveEmployee}" th:object="${employee}" method="post">
                     <div class="form-group">
                         <label for="firstname">First Name:</label>
-                        <input type="text" th:field="*{firstname}" class="form-control" />
+                        <input id="firstname" type="text" th:field="*{firstname}" class="form-control" />
                         <div th:if="${#fields.hasErrors('firstname')}" th:errors="*{firstname}"
                              class="invalid-feedback">First Name Error
                         </div>
                     </div>
                     <div class="form-group">
                         <label for="lastname">Last Name:</label>
-                        <input type="text" th:field="*{lastname}" class="form-control" />
+                        <input id="lastname" type="text" th:field="*{lastname}" class="form-control" />
                         <div th:if="${#fields.hasErrors('lastname')}" th:errors="*{lastname}"
                              class="invalid-feedback">Last Name Error
                         </div>
                     </div>
                     <div class="form-group">
                         <label for="email">Email:</label>
-                        <input type="email" th:field="*{email}" class="form-control" />
+                        <input id="email" type="email" th:field="*{email}" class="form-control" />
                         <div th:if="${#fields.hasErrors('email')}" th:errors="*{email}" class="invalid-feedback">
                             Email Error
                         </div>
